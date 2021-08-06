@@ -15,6 +15,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.findAll();
@@ -25,21 +26,31 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PutMapping("/users")
-    public User insert(@RequestBody User user){
+    @PostMapping("/users")
+    public User insert(@RequestBody User user) {
+
         return userService.insert(user);
     }
 
+
     //update
     @PutMapping("/users/{id}")
-    public User update(@RequestBody User user,@PathVariable(name = "id") Integer id) {
+    public User update(@RequestBody User user, @PathVariable(name = "id") Integer id) {
         user.setId(id);
         return userService.update(user);
     }
 
     //delete
     @DeleteMapping("/users/{id}")
-    public User delete(@PathVariable(name = "id") Integer id){
+    public User delete(@PathVariable(name = "id") Integer id) {
         return userService.delete(id);
     }
+
+
+    @GetMapping("/users/activate")
+    public User activateMethod(@RequestParam(name = "jwt") String jwt) {
+        return userService.activateByEmailToken(jwt);
+    }
+
+
 }

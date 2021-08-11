@@ -1,5 +1,6 @@
 package com.db.POJO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,5 +30,9 @@ public class User {
 
     @Column(name = "is_activated", columnDefinition="tinyint(1) default 0")
     private boolean isActivated;
+
+    @Column(name = "login_token")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String jwtToken;
 
 }

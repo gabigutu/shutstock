@@ -28,7 +28,28 @@ public class UserService {
     EmailService emailService;
 
 
-    public List<User> findAll() {
+    public List<User> findAll(String jwtToken) {
+        try{
+            DecodedJWT jwtDecoded = JWT.decode(jwtToken);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            Date dateNow = new Date(System.currentTimeMillis());
+            System.out.println(formatter.format(dateNow));
+
+            // verify if expired
+            if(jwtDecoded.getExpiresAt().after(dateNow)) {
+                // verify username + UID coincide in DB
+                int id = jwtDecoded.getClaim("id").asInt();
+                User user = userRepository.findById(id).get();
+                if(user!=null && user.isActivated() && user.getRole() == '2') {
+                    List<User> userList = userRepository.findAll();
+                    return userList;
+                }
+                return null;
+            }
+        }catch(JWTDecodeException e){
+            System.out.println("JWTDecode ERROR !");
+        }
         return userRepository.findAll();
     }
 
@@ -96,7 +117,7 @@ public class UserService {
         return null;
     }
 
-    private String generateLoginToken(User user) {
+    public String generateLoginToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256("bancu");
 
@@ -109,10 +130,11 @@ public class UserService {
             String token = JWT.create()
                     .withIssuer("auth0")
                     .withClaim("username", user.getUsername())
-                    .withClaim("UID", user.getUID())
+                    .withClaim("id", user.getId())
                     .withIssuedAt(dateNow)
                     .withExpiresAt(expireDate)
                     //    .withClaim("password", (String) null)
+
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
@@ -146,4 +168,5 @@ public class UserService {
         }
        return null;
     }
+
 }

@@ -169,4 +169,10 @@ public class UserService {
        return null;
     }
 
+    public int generateCode() {
+        int randomNumber = (int) (Math.random()*(9999-1000+1)+1000);
+        System.out.println(randomNumber);
+        return randomNumber;
+    }
+
 }

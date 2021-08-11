@@ -31,8 +31,13 @@ public class User {
     @Column(name = "is_activated", columnDefinition="tinyint(1) default 0")
     private boolean isActivated;
 
+    @Column(name="code_activation",columnDefinition="int(1) default 0")
+    private int code;
+
     @Column(name = "login_token")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String jwtToken;
+
+
 
 }
